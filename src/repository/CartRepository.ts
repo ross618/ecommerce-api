@@ -137,24 +137,45 @@ class CartRepository implements ICart {
     }
   }
 
+  private async getCartById(cartId) {
+    try {
+      const activeCart = await this.apiRoot
+        .withProjectKey({ projectKey: this.projectKey })
+        .me()
+        .carts()
+        .withId({ ID: cartId })
+        .get()
+        .execute()
+
+      return activeCart
+    } catch (error) {
+      return error
+    }
+  }
+
   async updateActiveCart(productDetails) {
     try {
-      let { cartId, cartUpdateDraft } = productDetails
+      // let { cartId, cartUpdateDraft } = productDetails
       // if cartId is undefined create an anonymous cart
-      if (!cartId) {
+      if (!productDetails.cartId) {
         const { body } = await this.createCartForCurrentCustomer({
           currency: process.env.DEFAULT_CURRENCY,
         })
-        cartId = body.id
-        cartUpdateDraft.version = body.version
+        console.log(body.id);
+        productDetails.cartId = body.id
+        productDetails.version = body.version
+      } else {
+        // const { body } = await this.getCartById(productDetails.cartId);
+        const { body } = await this.getActiveCart()
+        productDetails.version = body.version
       }
 
       const updatedCart = await this.apiRoot
         .withProjectKey({ projectKey: this.projectKey })
         .me()
         .carts()
-        .withId({ ID: cartId })
-        .post({ body: this.createCartUpdateDraft(cartUpdateDraft) })
+        .withId({ ID: productDetails.cartId })
+        .post({ body: this.createCartUpdateDraft(productDetails) })
         .execute()
 
       return updatedCart
@@ -166,6 +187,12 @@ class CartRepository implements ICart {
   async removeLineItem(productDetails) {
     try {
       const { body } = await this.getActiveCart()
+      productDetails.version = body.version;
+      if (!productDetails.lineItemId) {
+        const lineItems = body.lineItems;
+        const currentLineItem = lineItems.find((lineItem) => lineItem.productId === productDetails.productId);
+        productDetails.lineItemId = currentLineItem.id;
+      }
       const updatedCart = await this.apiRoot
         .withProjectKey({ projectKey: this.projectKey })
         .me()
