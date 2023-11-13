@@ -1,52 +1,18 @@
 import Client from '../client/Client'
 import { ApiRoot } from '@commercetools/platform-sdk'
+import {
+  CartDraft,
+  MyCartUpdate,
+  CartUpdateDraft,
+  MyCartRemoveItem,
+  CartRemoveItemDraft,
+} from '../types/cart';
 
 interface ICart {
   apiRoot: ApiRoot
   projectKey: string
   createCartForCurrentCustomer(cartDraft: CartDraft): object
   getActiveCart(): object
-}
-
-type CartDraft = {
-  currency: string
-  customerEmail?: string
-}
-
-type MyCartUpdate = {
-  version: number
-  actions: Array<MyCartUpdateAction>
-}
-
-type MyCartUpdateAction = {
-  readonly action: 'addLineItem'
-  readonly productId?: string
-  readonly variantId?: number
-  readonly quantity?: number
-}
-
-type MyCartRemoveItem = {
-  version: number
-  actions: Array<MyCartRemoveLineItemAction>
-}
-
-type MyCartRemoveLineItemAction = {
-  readonly action: 'removeLineItem'
-  readonly lineItemId: string
-  readonly quantity?: number
-}
-
-type CartUpdateDraft = {
-  version: number
-  productId: string
-  variantId: number
-  quantity: number
-}
-
-type CartRemoveItemDraft = {
-  version: number
-  lineItemId: string
-  quantity: number
 }
 
 class CartRepository implements ICart {
