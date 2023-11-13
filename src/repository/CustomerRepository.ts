@@ -88,8 +88,7 @@ class CustomerRepository implements ICustomerRepository {
             email,
             password,
             updateProductData: true,
-            // anonymousId: options?.anonymousId,
-            // anonymousCartSignInMode: 'MergeWithExistingCustomerCart',
+            activeCartSignInMode: 'MergeWithExistingCustomerCart',
           },
         })
         .execute()

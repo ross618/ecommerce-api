@@ -155,13 +155,11 @@ class CartRepository implements ICart {
 
   async updateActiveCart(productDetails) {
     try {
-      // let { cartId, cartUpdateDraft } = productDetails
       // if cartId is undefined create an anonymous cart
       if (!productDetails.cartId) {
         const { body } = await this.createCartForCurrentCustomer({
           currency: process.env.DEFAULT_CURRENCY,
         })
-        console.log(body.id);
         productDetails.cartId = body.id
         productDetails.version = body.version
       } else {

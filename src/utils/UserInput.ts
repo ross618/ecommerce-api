@@ -82,7 +82,7 @@ class UserInput {
         }
         output.issues.invalidField += `${requiredFields[i]
           .toString()
-          .toLowerCase()} is empty. `
+          .toLowerCase()} is required.`
         output.isValid = false
       }
     }
@@ -91,31 +91,31 @@ class UserInput {
       return output
     }
 
-    // validate email
-    if (requestBody.email && !this.emailValidator(requestBody)) {
-      output.isValid = false
-      output.issues.email = 'invalid email'
-    }
+    // // validate email
+    // if (requestBody.email && !this.emailValidator(requestBody)) {
+    //   output.isValid = false
+    //   output.issues.email = 'invalid email'
+    // }
 
-    // validate firstName
-    const { firstName } = requestBody
-    if (firstName && !this.nameValidator(firstName)) {
-      output.isValid = false
-      output.issues.firstName = 'invalid firstname'
-    }
+    // // validate firstName
+    // const { firstName } = requestBody
+    // if (firstName && !this.nameValidator(firstName)) {
+    //   output.isValid = false
+    //   output.issues.firstName = 'invalid firstname'
+    // }
 
-    // validate lastName
-    const { lastName } = requestBody
-    if (lastName && !this.nameValidator(lastName)) {
-      output.isValid = false
-      output.issues.lastName = 'invalid lastname'
-    }
+    // // validate lastName
+    // const { lastName } = requestBody
+    // if (lastName && !this.nameValidator(lastName)) {
+    //   output.isValid = false
+    //   output.issues.lastName = 'invalid lastname'
+    // }
 
-    // validate password
-    if (requestBody.password && !this.passwordValidator(requestBody)) {
-      output.isValid = false
-      output.issues.invalidField = 'password length is less then 8'
-    }
+    // // validate password
+    // if (requestBody.password && !this.passwordValidator(requestBody)) {
+    //   output.isValid = false
+    //   output.issues.invalidField = 'password length is less then 8'
+    // }
 
     return output
   }

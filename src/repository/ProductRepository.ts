@@ -20,16 +20,17 @@ class Product implements IProductRepository {
   apiRoot: ApiRoot
   projectKey: string
   constructor(options) {
-    const rootClient = new Client(options)
+    const rootClient = new Client(options);
     this.apiRoot = rootClient.getApiRoot(
       rootClient.getClientFromOption(options)
-    )
-    this.projectKey = rootClient.getProjectKey()
+    );
+    this.projectKey = rootClient.getProjectKey();
   }
 
   createProductDraft(productData) {
     const { productTypeID, slug, name, description, sku, price } = productData;
-    const typeId: 'product-type' = 'product-type';
+    const productTypeId: 'product-type' = 'product-type';
+    const taxTypeId: 'tax-category' = 'tax-category';
 
 
     return {
@@ -37,7 +38,7 @@ class Product implements IProductRepository {
         "en-GB": name
       },
       productType: {
-        typeId,
+        typeId: productTypeId,
         id: productTypeID,
       },
       description: {
@@ -55,6 +56,10 @@ class Product implements IProductRepository {
           }
         }]
       },
+      taxCategory: {
+        typeId: taxTypeId,
+        id: "cbae3370-a392-4a53-ad15-10eabe88867e"
+    },
       publish: true
     }
   }
@@ -89,22 +94,14 @@ class Product implements IProductRepository {
             currencyCode: "EUR",
             centAmount: price
           }
-        },
-        published : true
+        }
       }
       actions.push(changePriceAction);
     }
-    // const action: ProductSetDescriptionAction = {
-    //   action: "setDescription",
-    //   description : {
-    //     "en-GB" : description
-    //   }
-    // };
 
-    // const action: ProductChangeNameAction = {
-    //   action: "changeName",
-    //   name
-    // };
+    if (actions.length) {
+      actions.push({ action: "publish" });
+    }
     
     return {
       version,
@@ -153,6 +150,9 @@ class Product implements IProductRepository {
   async addProduct(productData) {
     try {
       // Create new product
+      if (productData.quantityOnStock) {
+        await this.setStockQuantity(productData);
+      }
       const product = await this.apiRoot
           .withProjectKey({ projectKey: this.projectKey })
           .products()
@@ -160,6 +160,7 @@ class Product implements IProductRepository {
             body: this.createProductDraft(productData),
           })
           .execute();
+
 
           return product
     } catch (error) {
@@ -171,9 +172,14 @@ class Product implements IProductRepository {
     try {
       // Update product with productId
       const currentProduct = await this.getProductById(productData.productId);
+      if (productData.quantityOnStock) {
+        productData.inventoryId = currentProduct?.body?.masterData?.current?.masterVariant?.availability?.id;
+        productData.inventoryVersion = currentProduct?.body?.masterData?.current?.masterVariant?.availability?.version;
+        await this.updateStockQuantity(productData)
+      }
       productData.version = currentProduct?.body?.version;
       productData.priceId = currentProduct?.body?.masterData?.current?.masterVariant?.prices[0]?.id;
-      // console.log(currentProduct);
+      
       const product = await this.apiRoot
           .withProjectKey({ projectKey: this.projectKey })
           .products()
@@ -193,14 +199,6 @@ class Product implements IProductRepository {
     try {
       const currentProduct = await this.getProductById(productId);
       const unpublishedProduct = await this.unpublishProduct(currentProduct);
-      // const product = await this.apiRoot
-      //     .withProjectKey({ projectKey: this.projectKey })
-      //     .products()
-      //     .withId({ ID: productId })
-      //     .post({
-      //       body: this.unpublishProductDraft(unpublishedProduct?.body?.version),
-      //     })
-      //     .execute();
 
       const deleteProduct = await this.apiRoot
           .withProjectKey({ projectKey: this.projectKey })
@@ -217,6 +215,49 @@ class Product implements IProductRepository {
       return error
     }
   }
+
+  private async setStockQuantity(productData) {
+    try {
+      const { sku, quantityOnStock } = productData;
+          const inventory = await this.apiRoot
+          .withProjectKey({ projectKey: this.projectKey })
+          .inventory()
+          .post({
+            body: {
+              sku,
+              quantityOnStock
+            },
+          })
+          .execute();
+
+          return inventory
+    } catch (error) {
+      return error
+    }
+  }
+
+  private async updateStockQuantity(productData) {
+      try {
+            const inventory = await this.apiRoot
+            .withProjectKey({ projectKey: this.projectKey })
+            .inventory()
+            .withId({ID: productData.inventoryId})
+            .post({
+              body: {
+                version: productData.inventoryVersion,
+                actions: [{
+                  action : "changeQuantity",
+                  quantity : productData.quantityOnStock
+                }]
+              },
+            })
+            .execute();
+  
+            return inventory
+      } catch (error) {
+        return error
+      }
+    }
 
   private async unpublishProduct(productData) {
     try {
