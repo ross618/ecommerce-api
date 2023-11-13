@@ -1,5 +1,5 @@
 import Response from '../utils/Response'
-import UserInputs from '../utils/UserInput'
+import InputFields from '../utils/InputFields'
 
 /**
  *
@@ -23,7 +23,7 @@ class ProductValidator {
    * @returns {object} http response object
    */
   static validateGetProduct = (request, response, next) => {
-    const { requiredFields } = UserInputs
+    const { requiredFields } = InputFields
     const { isValid, issues } = requiredFields(request.body, [
       'productId'
     ])
@@ -44,7 +44,7 @@ class ProductValidator {
    * @returns {object} http response object
    */
   static validateAddProduct = (request, response, next) => {
-    const { requiredFields } = UserInputs
+    const { requiredFields } = InputFields
     const { isValid, issues } = requiredFields(request.body, [
       'name',
       'description',
@@ -70,7 +70,7 @@ class ProductValidator {
    * @returns {object} http response object
    */
   static validateUpdateProduct = (request, response, next) => {
-    const { requiredFields, optionalFields } = UserInputs
+    const { requiredFields, optionalFields } = InputFields
     let { isValid, issues } = requiredFields(request.body, [
       'productId'
     ]);
@@ -100,7 +100,7 @@ class ProductValidator {
    * @returns {object} http response object
    */
   static validateDeleteProduct = (request, response, next) => {
-    const { requiredFields } = UserInputs
+    const { requiredFields } = InputFields
     let { isValid, issues } = requiredFields(request.body, [
       'productId'
     ]);

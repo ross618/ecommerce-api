@@ -1,5 +1,5 @@
 import Response from '../utils/Response'
-import UserInputs from '../utils/UserInput'
+import InputFields from '../utils/InputFields'
 
 /**
  *
@@ -23,7 +23,7 @@ class CartValidator {
    * @returns {object} http response object
    */
   static validateAddToCart = (request, response, next) => {
-    const { requiredFields } = UserInputs
+    const { requiredFields } = InputFields
     const { isValid, issues } = requiredFields(request.body, [
       'productId',
       'quantity'
@@ -45,7 +45,7 @@ class CartValidator {
    * @returns {object} http response object
    */
   static validateDeleteCartItem = (request, response, next) => {
-    const { requiredFields } = UserInputs
+    const { requiredFields } = InputFields
     const { isValid, issues } = requiredFields(request.body, [
       'productId',
       'quantity'

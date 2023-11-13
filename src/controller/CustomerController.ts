@@ -12,27 +12,6 @@ import { encrypt } from '../utils/helper'
  */
 class CustomerController {
   constructor() {}
-
-  async createCustomer(req: Request, res: Response) {
-    const options = getOptions(req.headers)
-    const data = await new CustomerRepository(options).createCustomer(req.body)
-
-    if (data?.statusCode == 201) {
-      return ResponseHandler.successResponse(
-        res,
-        data.statusCode,
-        data.message,
-        data.body
-      )
-    }
-    return ResponseHandler.errorResponse(
-      res,
-      data.statusCode,
-      data.message,
-      data.body
-    )
-  }
-
   async getCustomer(req: Request, res: Response) {
     const { email: username, password } = req.body
     const options = getOptions(req.headers, { username, password })

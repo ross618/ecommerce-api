@@ -198,6 +198,7 @@ class Product implements IProductRepository {
   async deleteProductById(productId) {
     try {
       const currentProduct = await this.getProductById(productId);
+      // return data if not successful response
       if (currentProduct.statusCode !== 200) {
         return currentProduct;
       }

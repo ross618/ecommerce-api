@@ -1,14 +1,14 @@
 import Client from '../client/Client'
 import { ApiRoot } from '@commercetools/platform-sdk'
 
-type CustomerData = {
-  email: string
-  password: string
-  firstName: string
-  lastName: string
-  countryCode: string
-  key: string
-}
+// type CustomerData = {
+//   email: string
+//   password: string
+//   firstName: string
+//   lastName: string
+//   countryCode: string
+//   key: string
+// }
 
 type ICustomerOptions = {
   anonymousId?: object
@@ -16,8 +16,8 @@ type ICustomerOptions = {
 interface ICustomerRepository {
   apiRoot: ApiRoot
   projectKey: string
-  createCustomerDraft(customerData: CustomerData): object
-  createCustomer(customerData: CustomerData): any | never
+  // createCustomerDraft(customerData: CustomerData): object
+  // createCustomer(customerData: CustomerData): any | never
   getCustomer(
     {
       email,
@@ -41,41 +41,41 @@ class CustomerRepository implements ICustomerRepository {
     this.projectKey = rootClient.getProjectKey()
   }
 
-  createCustomerDraft(customerData) {
-    const { email, password, firstName, lastName, countryCode, key } =
-      customerData
+  // createCustomerDraft(customerData) {
+  //   const { email, password, firstName, lastName, countryCode, key } =
+  //     customerData
 
-    return {
-      email,
-      password,
-      key,
-      firstName,
-      lastName,
-      addresses: [
-        {
-          country: countryCode,
-        },
-      ],
-      defaultShippingAddress: 0,
-    }
-  }
+  //   return {
+  //     email,
+  //     password,
+  //     key,
+  //     firstName,
+  //     lastName,
+  //     addresses: [
+  //       {
+  //         country: countryCode,
+  //       },
+  //     ],
+  //     defaultShippingAddress: 0,
+  //   }
+  // }
 
-  async createCustomer(customerData) {
-    try {
-      const customer = await this.apiRoot
-        .withProjectKey({ projectKey: this.projectKey })
-        .customers()
-        .post({
-          body: this.createCustomerDraft(customerData),
-        })
-        .execute()
+  // async createCustomer(customerData) {
+  //   try {
+  //     const customer = await this.apiRoot
+  //       .withProjectKey({ projectKey: this.projectKey })
+  //       .customers()
+  //       .post({
+  //         body: this.createCustomerDraft(customerData),
+  //       })
+  //       .execute()
 
-      // check to make sure status is 201
-      return customer
-    } catch (error) {
-      return error
-    }
-  }
+  //     // check to make sure status is 201
+  //     return customer
+  //   } catch (error) {
+  //     return error
+  //   }
+  // }
 
   async getCustomer({ email, password }, options) {
     try {

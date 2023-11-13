@@ -1,9 +1,9 @@
-import Validator from "./Validator";
+import CustomerValidator from "./CustomerValidator";
 import ProductValidator from "./ProductValidator";
 import CartValidator from "./CartValidator";
 
 export {
-  Validator,
+  CustomerValidator,
   ProductValidator,
   CartValidator
 }

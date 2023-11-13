@@ -163,7 +163,6 @@ class CartRepository implements ICart {
         productDetails.cartId = body.id
         productDetails.version = body.version
       } else {
-        // const { body } = await this.getCartById(productDetails.cartId);
         const { body } = await this.getActiveCart()
         productDetails.version = body.version
       }
@@ -184,9 +183,13 @@ class CartRepository implements ICart {
 
   async removeLineItem(productDetails) {
     try {
-      const { body } = await this.getActiveCart()
-      productDetails.version = body.version;
-      const lineItems = body.lineItems;
+      const activeCart = await this.getActiveCart()
+      // return data if not successful response
+      if (activeCart.statusCode !== 200) {
+        return activeCart;
+      }
+      productDetails.version = activeCart.body.version;
+      const lineItems = activeCart.body.lineItems;
       // Find correct lineItem ID from productId
       const currentLineItem = lineItems.find((lineItem) => lineItem.productId === productDetails.productId);
       productDetails.lineItemId = currentLineItem.id;
@@ -195,7 +198,7 @@ class CartRepository implements ICart {
         .withProjectKey({ projectKey: this.projectKey })
         .me()
         .carts()
-        .withId({ ID: body.id })
+        .withId({ ID: activeCart.body.id })
         .post({ body: this.createRemoveItemDraft(productDetails) })
         .execute()
 

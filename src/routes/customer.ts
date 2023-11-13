@@ -1,12 +1,12 @@
 import { Router } from 'express'
 import { CustomerController } from '../controller'
-import { Validator } from '../middleware'
+import { CustomerValidator } from '../middleware'
 
 const customerController = new CustomerController()
 
 const router = Router()
-const { validateSignup, validateLogin } = Validator
-const { createCustomer, getCustomer, logoutCustomer } = customerController
+const { validateLogin } = CustomerValidator
+const { getCustomer, logoutCustomer } = customerController
 
 function forwardID(req, res, next) {
   res.locals.anonymousId = req.headers.token
@@ -18,11 +18,6 @@ router.post(
   validateLogin,
   forwardID,
   getCustomer.bind(customerController)
-)
-router.post(
-  '/register',
-  validateSignup,
-  createCustomer.bind(customerController)
 )
 router.post('/logout', logoutCustomer.bind(customerController))
 

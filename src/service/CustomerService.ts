@@ -2,7 +2,6 @@ import { CustomerRepository } from '../repository'
 
 interface ICustomerService {
   customerRepository: typeof CustomerRepository
-  createCustomer(customerData): any
   getCustomer({ email, password }: { email: string; password: string }): any
 }
 /**
@@ -12,10 +11,6 @@ class CustomerService implements ICustomerService {
   customerRepository: any
   constructor(CustomerRepository) {
     this.customerRepository = CustomerRepository
-  }
-
-  createCustomer(customer) {
-    return this.customerRepository.createCustomer(customer)
   }
 
   getCustomer(customer) {
