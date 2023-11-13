@@ -81,8 +81,65 @@ class UserInput {
           output.issues.invalidField = ''
         }
         output.issues.invalidField += `${requiredFields[i]
-          .toString()
-          .toLowerCase()} is required.`
+          .toString()} is required.`
+        output.isValid = false
+      }
+    }
+
+    if (!output.isValid) {
+      return output
+    }
+
+    // validate email
+    if (requestBody.email && !this.emailValidator(requestBody)) {
+      output.isValid = false
+      output.issues.email = 'invalid email'
+    }
+
+    // validate firstName
+    const { firstName } = requestBody
+    if (firstName && !this.nameValidator(firstName)) {
+      output.isValid = false
+      output.issues.firstName = 'invalid firstname'
+    }
+
+    // validate lastName
+    const { lastName } = requestBody
+    if (lastName && !this.nameValidator(lastName)) {
+      output.isValid = false
+      output.issues.lastName = 'invalid lastname'
+    }
+
+    // validate password
+    if (requestBody.password && !this.passwordValidator(requestBody)) {
+      output.isValid = false
+      output.issues.invalidField = 'password length is less then 8'
+    }
+
+    return output
+  }
+
+  /**
+   *
+   * @description required input fields validator
+   *
+   * @param { requestBody }
+   *
+   * @return { Object } output
+   */
+  static requiredFields = (requestBody, requiredFields) => {
+    const output: Output = {
+      isValid: true,
+      issues: {},
+    }
+
+    for (let i = 0; i < requiredFields.length; i++) {
+      if (requestBody[requiredFields[i]] === undefined) {
+        if (output.isValid === true) {
+          output.issues.invalidField = ''
+        }
+        output.issues.invalidField += `${requiredFields[i]
+          .toString()} is required.`
         output.isValid = false
       }
     }
@@ -116,6 +173,30 @@ class UserInput {
     //   output.isValid = false
     //   output.issues.invalidField = 'password length is less then 8'
     // }
+
+    return output
+  }
+
+  static optionalFields = (requestBody, requiredFields) => {
+    const output: Output = {
+      isValid: true,
+      issues: {},
+    }
+
+    if (Object.keys(requestBody).length <= 1) {
+      for (let i = 0; i < requiredFields.length; i++) {
+          if (output.isValid === true) {
+            output.issues.invalidField = 'Optional fields are missing: '
+          }
+          output.issues.invalidField += `'${requiredFields[i]
+            .toString()}' `
+          output.isValid = false
+      }
+    }
+
+    if (!output.isValid) {
+      return output
+    }
 
     return output
   }

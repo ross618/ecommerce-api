@@ -74,14 +74,14 @@ class CartRepository implements ICart {
     cartUpdateDraft: CartUpdateDraft
   ): MyCartUpdate {
     const action = 'addLineItem' // default value needed to tell the system we are adding an item to cart
-    const { version, productId, variantId, quantity } = cartUpdateDraft
+    const { version, productId, quantity } = cartUpdateDraft
     return {
       version,
       actions: [
         {
           action,
           productId,
-          variantId,
+          variantId: 1, // use master variant
           quantity,
         },
       ],
@@ -186,11 +186,11 @@ class CartRepository implements ICart {
     try {
       const { body } = await this.getActiveCart()
       productDetails.version = body.version;
-      if (!productDetails.lineItemId) {
-        const lineItems = body.lineItems;
-        const currentLineItem = lineItems.find((lineItem) => lineItem.productId === productDetails.productId);
-        productDetails.lineItemId = currentLineItem.id;
-      }
+      const lineItems = body.lineItems;
+      // Find correct lineItem ID from productId
+      const currentLineItem = lineItems.find((lineItem) => lineItem.productId === productDetails.productId);
+      productDetails.lineItemId = currentLineItem.id;
+
       const updatedCart = await this.apiRoot
         .withProjectKey({ projectKey: this.projectKey })
         .me()

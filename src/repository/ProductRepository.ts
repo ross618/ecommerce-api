@@ -28,7 +28,7 @@ class Product implements IProductRepository {
   }
 
   createProductDraft(productData) {
-    const { productTypeID, slug, name, description, sku, price } = productData;
+    const { slug, name, description, sku, price } = productData;
     const productTypeId: 'product-type' = 'product-type';
     const taxTypeId: 'tax-category' = 'tax-category';
 
@@ -39,7 +39,7 @@ class Product implements IProductRepository {
       },
       productType: {
         typeId: productTypeId,
-        id: productTypeID,
+        id: "fba500bd-e91e-498c-a30a-d636c66521de", // currently only 1 product type has been created
       },
       description: {
         "en-GB": description
@@ -179,7 +179,7 @@ class Product implements IProductRepository {
       }
       productData.version = currentProduct?.body?.version;
       productData.priceId = currentProduct?.body?.masterData?.current?.masterVariant?.prices[0]?.id;
-      
+
       const product = await this.apiRoot
           .withProjectKey({ projectKey: this.projectKey })
           .products()
@@ -198,6 +198,9 @@ class Product implements IProductRepository {
   async deleteProductById(productId) {
     try {
       const currentProduct = await this.getProductById(productId);
+      if (currentProduct.statusCode !== 200) {
+        return currentProduct;
+      }
       const unpublishedProduct = await this.unpublishProduct(currentProduct);
 
       const deleteProduct = await this.apiRoot
