@@ -3,6 +3,7 @@ import { Request, Response } from 'express'
 import { CustomerRepository } from '../repository'
 import { getOptions } from '../utils/options'
 import { encrypt } from '../utils/helper'
+import jwt from 'jsonwebtoken'
 
 /**
  * @description CustomerController
@@ -14,6 +15,7 @@ class CustomerController {
   constructor() {}
   async getCustomer(req: Request, res: Response) {
     const { email: username, password } = req.body
+    const user = {username, password}
     const options = getOptions(req.headers, { username, password })
     const data = await new CustomerRepository(options).getCustomer(
       req.body,
@@ -21,7 +23,8 @@ class CustomerController {
     )
 
     if (data.statusCode == 200) {
-      data.body.token = data.body?.customer.id
+      // create jwt access token if successfully logged in
+      data.body.token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '2h'});
       return ResponseHandler.successResponse(
         res,
         data.statusCode || data.body.statusCode,

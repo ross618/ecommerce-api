@@ -1,81 +1,34 @@
-import Client from '../client/Client'
-import { ApiRoot } from '@commercetools/platform-sdk'
-
-// type CustomerData = {
-//   email: string
-//   password: string
-//   firstName: string
-//   lastName: string
-//   countryCode: string
-//   key: string
-// }
+import Client from '../client/Client';
+import { ApiRoot } from '@commercetools/platform-sdk';
 
 type ICustomerOptions = {
-  anonymousId?: object
-}
+  anonymousId?: object;
+};
 interface ICustomerRepository {
-  apiRoot: ApiRoot
-  projectKey: string
-  // createCustomerDraft(customerData: CustomerData): object
-  // createCustomer(customerData: CustomerData): any | never
+  apiRoot: ApiRoot;
+  projectKey: string;
   getCustomer(
     {
       email,
       password,
     }: {
-      email: string
-      password: string
+      email: string;
+      password: string;
     },
     options: ICustomerOptions
-  ): any | never
+  ): any | never;
 }
 
 class CustomerRepository implements ICustomerRepository {
-  apiRoot: ApiRoot
-  projectKey: string
+  apiRoot: ApiRoot;
+  projectKey: string;
   constructor(options) {
-    const rootClient = new Client(options)
+    const rootClient = new Client(options);
     this.apiRoot = rootClient.getApiRoot(
       rootClient.getClientFromOption(options)
-    )
-    this.projectKey = rootClient.getProjectKey()
+    );
+    this.projectKey = rootClient.getProjectKey();
   }
-
-  // createCustomerDraft(customerData) {
-  //   const { email, password, firstName, lastName, countryCode, key } =
-  //     customerData
-
-  //   return {
-  //     email,
-  //     password,
-  //     key,
-  //     firstName,
-  //     lastName,
-  //     addresses: [
-  //       {
-  //         country: countryCode,
-  //       },
-  //     ],
-  //     defaultShippingAddress: 0,
-  //   }
-  // }
-
-  // async createCustomer(customerData) {
-  //   try {
-  //     const customer = await this.apiRoot
-  //       .withProjectKey({ projectKey: this.projectKey })
-  //       .customers()
-  //       .post({
-  //         body: this.createCustomerDraft(customerData),
-  //       })
-  //       .execute()
-
-  //     // check to make sure status is 201
-  //     return customer
-  //   } catch (error) {
-  //     return error
-  //   }
-  // }
 
   async getCustomer({ email, password }, options) {
     try {
@@ -91,21 +44,21 @@ class CustomerRepository implements ICustomerRepository {
             activeCartSignInMode: 'MergeWithExistingCustomerCart',
           },
         })
-        .execute()
+        .execute();
 
-      return customer
+      return customer;
     } catch (error) {
-      return error
+      return error;
     }
   }
 
   async logoutCustomer() {
     try {
-      return null
+      return null;
     } catch (error) {
-      return error
+      return error;
     }
   }
 }
 
-export default CustomerRepository
+export default CustomerRepository;

@@ -1,5 +1,5 @@
-import Client from '../client/Client'
-import { ApiRoot } from '@commercetools/platform-sdk'
+import Client from '../client/Client';
+import { ApiRoot } from '@commercetools/platform-sdk';
 import {
   CartDraft,
   MyCartUpdate,
@@ -9,38 +9,38 @@ import {
 } from '../types/cart';
 
 interface ICart {
-  apiRoot: ApiRoot
-  projectKey: string
-  createCartForCurrentCustomer(cartDraft: CartDraft): object
-  getActiveCart(): object
+  apiRoot: ApiRoot;
+  projectKey: string;
+  createCartForCurrentCustomer(cartDraft: CartDraft): object;
+  getActiveCart(): object;
 }
 
 class CartRepository implements ICart {
-  apiRoot: ApiRoot
-  projectKey: string
+  apiRoot: ApiRoot;
+  projectKey: string;
 
   constructor(options) {
-    const rootClient = new Client(options)
+    const rootClient = new Client(options);
     this.apiRoot = rootClient.getApiRoot(
       rootClient.getClientFromOption(options)
-    )
-    this.projectKey = rootClient.getProjectKey()
+    );
+    this.projectKey = rootClient.getProjectKey();
   }
 
   private createCustomerCartDraft(cartData) {
-    const { currency, customerEmail } = cartData
+    const { currency, customerEmail } = cartData;
 
     return {
       currency,
       customerEmail,
-    }
+    };
   }
 
   private createCartUpdateDraft(
     cartUpdateDraft: CartUpdateDraft
   ): MyCartUpdate {
-    const action = 'addLineItem' // default value needed to tell the system we are adding an item to cart
-    const { version, productId, quantity } = cartUpdateDraft
+    const action = 'addLineItem';
+    const { version, productId, quantity } = cartUpdateDraft;
     return {
       version,
       actions: [
@@ -51,14 +51,14 @@ class CartRepository implements ICart {
           quantity,
         },
       ],
-    }
+    };
   }
 
   private createRemoveItemDraft(
     cartRemoveItemDraft: CartRemoveItemDraft
   ): MyCartRemoveItem {
-    const action = 'removeLineItem' // default value needed to tell the system we are removing an item from the cart
-    const { version, lineItemId, quantity } = cartRemoveItemDraft
+    const action = 'removeLineItem';
+    const { version, lineItemId, quantity } = cartRemoveItemDraft;
     return {
       version,
       actions: [
@@ -68,13 +68,13 @@ class CartRepository implements ICart {
           quantity,
         },
       ],
-    }
+    };
   }
 
   async createCartForCurrentCustomer(cartDraft: CartDraft) {
     try {
-      const cart = await this.getActiveCart()
-      if (cart?.statusCode == 200) return cart
+      const cart = await this.getActiveCart();
+      if (cart?.statusCode == 200) return cart;
       return this.apiRoot
         .withProjectKey({ projectKey: this.projectKey })
         .me()
@@ -82,9 +82,9 @@ class CartRepository implements ICart {
         .post({
           body: this.createCustomerCartDraft(cartDraft),
         })
-        .execute()
+        .execute();
     } catch (error) {
-      return error
+      return error;
     }
   }
 
@@ -95,11 +95,11 @@ class CartRepository implements ICart {
         .me()
         .activeCart()
         .get()
-        .execute()
+        .execute();
 
-      return activeCart
+      return activeCart;
     } catch (error) {
-      return error
+      return error;
     }
   }
 
@@ -111,11 +111,11 @@ class CartRepository implements ICart {
         .carts()
         .withId({ ID: cartId })
         .get()
-        .execute()
+        .execute();
 
-      return activeCart
+      return activeCart;
     } catch (error) {
-      return error
+      return error;
     }
   }
 
@@ -125,12 +125,12 @@ class CartRepository implements ICart {
       if (!productDetails.cartId) {
         const { body } = await this.createCartForCurrentCustomer({
           currency: process.env.DEFAULT_CURRENCY,
-        })
-        productDetails.cartId = body.id
-        productDetails.version = body.version
+        });
+        productDetails.cartId = body.id;
+        productDetails.version = body.version;
       } else {
-        const { body } = await this.getActiveCart()
-        productDetails.version = body.version
+        const { body } = await this.getActiveCart();
+        productDetails.version = body.version;
       }
 
       const updatedCart = await this.apiRoot
@@ -139,25 +139,27 @@ class CartRepository implements ICart {
         .carts()
         .withId({ ID: productDetails.cartId })
         .post({ body: this.createCartUpdateDraft(productDetails) })
-        .execute()
+        .execute();
 
-      return updatedCart
+      return updatedCart;
     } catch (error) {
-      return error
+      return error;
     }
   }
 
   async removeLineItem(productDetails) {
     try {
-      const activeCart = await this.getActiveCart()
-      // return data if not successful response
+      const activeCart = await this.getActiveCart();
+      // return data if not successful
       if (activeCart.statusCode !== 200) {
         return activeCart;
       }
       productDetails.version = activeCart.body.version;
       const lineItems = activeCart.body.lineItems;
       // Find correct lineItem ID from productId
-      const currentLineItem = lineItems.find((lineItem) => lineItem.productId === productDetails.productId);
+      const currentLineItem = lineItems.find(
+        (lineItem) => lineItem.productId === productDetails.productId
+      );
       productDetails.lineItemId = currentLineItem.id;
 
       const updatedCart = await this.apiRoot
@@ -166,13 +168,13 @@ class CartRepository implements ICart {
         .carts()
         .withId({ ID: activeCart.body.id })
         .post({ body: this.createRemoveItemDraft(productDetails) })
-        .execute()
+        .execute();
 
-      return updatedCart
+      return updatedCart;
     } catch (error) {
-      return error
+      return error;
     }
   }
 }
 
-export default CartRepository
+export default CartRepository;
