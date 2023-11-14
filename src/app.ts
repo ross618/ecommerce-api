@@ -7,6 +7,8 @@ import express, {
 import cors from 'cors'
 
 import routes from './routes'
+import { serve, setup } from 'swagger-ui-express';
+import swaggerDocument from './path/swagger-output.json';
 
 const app = express()
 const { NODE_ENV } = process.env
@@ -15,6 +17,7 @@ const { NODE_ENV } = process.env
 app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+
 
 // Global error handler
 app.use(
@@ -35,5 +38,6 @@ app.use(
 
 // Routes
 app.use('/api', routes)
+app.use('/api-docs', serve, setup(swaggerDocument));
 
 export default app

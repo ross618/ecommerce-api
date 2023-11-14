@@ -12,6 +12,7 @@ class ProductController {
   constructor() {}
 
   async getProducts(req: Request, res: Response) {
+    /*  #swagger.parameters['obj'] = { in: 'body' } */
     const options = getOptions(req.headers)
     const data = await new ProductRepository(options).getProducts()
 
