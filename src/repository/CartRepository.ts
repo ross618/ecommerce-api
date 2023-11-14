@@ -160,7 +160,7 @@ class CartRepository implements ICart {
       const currentLineItem = lineItems.find(
         (lineItem) => lineItem.productId === productDetails.productId
       );
-      productDetails.lineItemId = currentLineItem.id;
+      productDetails.lineItemId = currentLineItem?.id;
 
       const updatedCart = await this.apiRoot
         .withProjectKey({ projectKey: this.projectKey })

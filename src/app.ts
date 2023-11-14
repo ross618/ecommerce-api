@@ -34,20 +34,6 @@ app.use(
 )
 
 // Routes
-app.use('/', routes)
-// app.get('/home', async function (_, res) {
-//   res.status(200).json({
-//     status: 'success',
-//     message: 'Welcome to Composable Commerce ME endpoint demo app',
-//   })
-// })
-// app.use('*', async (_, res: Response) => {
-//   return res.status(404).json({
-//     status: 'error',
-//     data: {
-//       message: 'resource not found on this server',
-//     },
-//   })
-// })
+app.use('/api', routes)
 
 export default app
