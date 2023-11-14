@@ -1,0 +1,20 @@
+
+version: '3'
+services:
+  api:
+    image: ecommerce-express-api
+    build: .
+    networks:
+      - backend
+    ports:
+      - "3000:3000"
+
+  web-cli:
+    image: ecommerce-express-api
+    networks:
+      - backend
+    command: sh
+
+networks:
+  backend:
+    driver: bridge

@@ -7,7 +7,7 @@ const doc = {
     title: 'Ecommerce API docs',
     description: 'Basic swagger API list',
   },
-  host: 'localhost:8085',
+  host: 'localhost:3000',
   basePath: '/',
   schemes: ['http', 'https'],
 };
