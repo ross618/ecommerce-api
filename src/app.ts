@@ -10,6 +10,12 @@ import routes from './routes'
 import { serve, setup } from 'swagger-ui-express';
 import swaggerDocument from './path/swagger-output.json';
 
+import bodyParser from 'body-parser'
+
+// const jsonParser
+
+// var bodyParser = require('body-parser')
+
 const app = express()
 const { NODE_ENV } = process.env
 

@@ -1,0 +1,41 @@
+service: ecommerce-api-serverless
+
+custom:
+  esbuild:
+    platform: 'node'
+    target: node16
+    sourcemap: linked
+  serverless-offline:
+    httpPort: 3000
+    noPrependStageInUrl: true
+    reloadHandler: true
+
+useDotenv: true
+
+provider:
+  name: aws
+  # stage: ${self:custom.stage}
+  # region: ${self:custom.region}
+  runtime: nodejs16.x
+  memorySize: 1024
+  timeout: 10
+  logRetentionInDays: 90
+  logs:
+    httpApi: true
+  httpApi:
+    # metrics: true # Enable if you need
+    cors: true
+
+functions:
+  app:
+    handler: src/handler.handler
+    # reservedConcurrency: 100
+    events:
+      - httpApi:
+          path: '/{proxy+}'
+          method: '*'
+
+plugins:
+  - serverless-dotenv-plugin
+  - serverless-esbuild
+  - serverless-offline
