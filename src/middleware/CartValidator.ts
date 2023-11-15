@@ -23,11 +23,16 @@ class CartValidator {
    * @returns {object} http response object
    */
   static validateAddToCart = (request, response, next) => {
-    const { requiredFields } = InputFields
-    const { isValid, issues } = requiredFields(request.body, [
+    const { requiredFields, numberValidator } = InputFields
+    let { isValid, issues } = requiredFields(request.body, [
       'productId',
       'quantity'
     ])
+    if (!numberValidator(request.body?.quantity)) {
+      isValid = false;
+      issues.invalidFields.push('quantity must be a number');
+    }
+    // isValid = numberValidator(request.body?.quantity)
     if (!isValid) {
       return Response.errorResponse(response, 400, 'invalid input', issues)
     }
@@ -45,11 +50,15 @@ class CartValidator {
    * @returns {object} http response object
    */
   static validateDeleteCartItem = (request, response, next) => {
-    const { requiredFields } = InputFields
-    const { isValid, issues } = requiredFields(request.body, [
+    const { requiredFields, numberValidator } = InputFields
+    let { isValid, issues } = requiredFields(request.body, [
       'productId',
       'quantity'
     ])
+    if (!numberValidator(request.body?.quantity)) {
+      isValid = false;
+      issues.invalidFields.push('quantity must be a number');
+    }
     if (!isValid) {
       return Response.errorResponse(response, 400, 'invalid input', issues)
     }

@@ -44,8 +44,8 @@ class ProductValidator {
    * @returns {object} http response object
    */
   static validateAddProduct = (request, response, next) => {
-    const { requiredFields } = InputFields
-    const { isValid, issues } = requiredFields(request.body, [
+    const { requiredFields, numberValidator } = InputFields
+    let { isValid, issues } = requiredFields(request.body, [
       'name',
       'description',
       'slug',
@@ -53,6 +53,14 @@ class ProductValidator {
       'price',
       'quantityOnStock',
     ])
+    if (!numberValidator(request.body?.quantityOnStock)) {
+      isValid = false;
+      issues.invalidFields.push('quantityOnStock must be a number');
+    }
+    if (!numberValidator(request.body?.price)) {
+      isValid = false;
+      issues.invalidFields.push('price must be a number in centAmount');
+    }
     if (!isValid) {
       return Response.errorResponse(response, 400, 'invalid input', issues)
     }
@@ -70,7 +78,7 @@ class ProductValidator {
    * @returns {object} http response object
    */
   static validateUpdateProduct = (request, response, next) => {
-    const { requiredFields, optionalFields } = InputFields
+    const { requiredFields, optionalFields, numberValidator } = InputFields
     let { isValid, issues } = requiredFields(request.body, [
       'productId'
     ]);
@@ -83,6 +91,14 @@ class ProductValidator {
       'price',
       'quantityOnStock',
     ]));
+    if (!numberValidator(request.body?.quantityOnStock)) {
+      isValid = false;
+      issues.invalidFields.push('quantityOnStock must be a number');
+    }
+    if (!numberValidator(request.body?.price)) {
+      isValid = false;
+      issues.invalidFields.push('price must be a number in centAmount');
+    }
     if (!isValid) {
       return Response.errorResponse(response, 400, 'invalid input', issues)
     }

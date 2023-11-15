@@ -1,7 +1,7 @@
 interface Output {
   isValid: boolean
   issues: {
-    invalidField?: string
+    invalidFields?: Array<any>;
   }
 }
 
@@ -26,14 +26,14 @@ class InputFields {
       isValid: true,
       issues: {},
     }
+    output.issues.invalidFields = [];
 
     for (let i = 0; i < requiredFields.length; i++) {
       if (requestBody[requiredFields[i]] === undefined) {
         if (output.isValid === true) {
-          output.issues.invalidField = ''
+          output.issues.invalidFields = [];
         }
-        output.issues.invalidField += `'${requiredFields[i]
-          .toString()}' is required.`
+        output.issues.invalidFields.push(`${requiredFields[i].toString()} is required`);
         output.isValid = false
       }
     }
@@ -45,19 +45,27 @@ class InputFields {
     return output
   }
 
+  /**
+   *
+   * @description optional input fields validator
+   *
+   * @param { requestBody }
+   *
+   * @return { Object } output
+   */
   static optionalFields = (requestBody, requiredFields) => {
     const output: Output = {
       isValid: true,
       issues: {},
     }
+    output.issues.invalidFields = [];
 
     if (Object.keys(requestBody).length <= 1) {
       for (let i = 0; i < requiredFields.length; i++) {
           if (output.isValid === true) {
-            output.issues.invalidField = 'Optional fields are missing: '
+            output.issues.invalidFields = []
           }
-          output.issues.invalidField += `'${requiredFields[i]
-            .toString()}' `
+          output.issues.invalidFields.push(`'${requiredFields[i].toString()}' can be included`);
           output.isValid = false
       }
     }
@@ -67,6 +75,20 @@ class InputFields {
     }
 
     return output
+  }
+
+  /**
+   *
+   * @description number validation method
+   *
+   * @param { number }
+   *
+   * @return { true | false }  boolean
+   */
+  static numberValidator = (number) => {
+    const numberValidator = /^[0-9]*$/
+
+    return numberValidator.test(number)
   }
 }
 
