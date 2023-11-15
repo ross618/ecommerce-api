@@ -15,7 +15,7 @@ useDotenv: true
 provider:
   name: aws
   # stage: ${self:custom.stage}
-  # region: ${self:custom.region}
+  region: eu-west-1
   runtime: nodejs16.x
   memorySize: 1024
   timeout: 10

@@ -150,7 +150,7 @@ class CartRepository implements ICart {
   async removeLineItem(productDetails) {
     try {
       const activeCart = await this.getActiveCart();
-      // return data if not successful
+      // return activeCart response if not successful
       if (activeCart.statusCode !== 200) {
         return activeCart;
       }

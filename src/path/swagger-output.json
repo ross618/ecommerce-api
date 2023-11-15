@@ -5,7 +5,7 @@
     "title": "Ecommerce API docs",
     "description": "Basic swagger API list"
   },
-  "host": "localhost:8085",
+  "host": "localhost:3000",
   "basePath": "/",
   "schemes": [
     "http",
@@ -17,14 +17,9 @@
         "description": "",
         "parameters": [
           {
-            "name": "token",
-            "in": "header",
-            "type": "string"
-          },
-          {
             "name": "object",
             "in": "body",
-            "description": "Log in with commercetools user",
+            "description": "Log in with commercetools user credentials",
             "schema": {
               "type": "object",
               "properties": {
@@ -47,16 +42,6 @@
         }
       }
     },
-    "/api/logout": {
-      "post": {
-        "description": "",
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        }
-      }
-    },
     "/api/products": {
       "get": {
         "description": "",
@@ -69,12 +54,12 @@
     },
     "/api/single-product": {
       "post": {
-        "description": "",
+        "description": "Get specific product by id",
         "parameters": [
           {
             "name": "object",
             "in": "body",
-            "description": "Get specific product by id",
+            "description": "'productId' is required",
             "schema": {
               "type": "object",
               "properties": {
@@ -95,7 +80,50 @@
     },
     "/api/product": {
       "post": {
-        "description": "",
+        "description": "Add a new product",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Use accessToken from /login in the format 'Bearer {accessToken}'",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "JSON",
+            "in": "body",
+            "description": "All fields below are required",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "Black Side Table"
+                },
+                "description": {
+                  "type": "string",
+                  "example": "Side table description"
+                },
+                "slug": {
+                  "type": "string",
+                  "example": "product123"
+                },
+                "sku": {
+                  "type": "string",
+                  "example": "ST-001"
+                },
+                "price": {
+                  "type": "number",
+                  "example": 4200
+                },
+                "quantityOnStock": {
+                  "type": "number",
+                  "example": 100
+                }
+              }
+            }
+          }
+        ],
         "responses": {
           "default": {
             "description": ""
@@ -103,7 +131,46 @@
         }
       },
       "put": {
-        "description": "",
+        "description": "Update existing product",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Use accessToken from /login in the format 'Bearer {accessToken}'",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "JSON",
+            "in": "body",
+            "description": "'productId' is required, other fields are optional",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "productId": {
+                  "type": "string",
+                  "example": "7718f2d9-610e-4571-a85f-1c5defee147a"
+                },
+                "name": {
+                  "type": "string",
+                  "example": "White Side Table"
+                },
+                "description": {
+                  "type": "string",
+                  "example": "new description"
+                },
+                "price": {
+                  "type": "number",
+                  "example": 5000
+                },
+                "quantityOnStock": {
+                  "type": "number",
+                  "example": 200
+                }
+              }
+            }
+          }
+        ],
         "responses": {
           "default": {
             "description": ""
@@ -111,7 +178,33 @@
         }
       },
       "delete": {
-        "description": "",
+        "security": {
+          "Bearer": []
+        },
+        "description": "Delete existing product",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Use accessToken from /login in the format 'Bearer {accessToken}'",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "JSON",
+            "in": "body",
+            "description": "'productId' is required",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "productId": {
+                  "type": "string",
+                  "example": "7718f2d9-610e-4571-a85f-1c5defee147a"
+                }
+              }
+            }
+          }
+        ],
         "responses": {
           "default": {
             "description": ""
@@ -121,15 +214,16 @@
     },
     "/api/cart": {
       "get": {
-        "description": "",
-        "responses": {
-          "default": {
-            "description": ""
+        "description": "Get current logged in users cart",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Use accessToken from /login in the format 'Bearer {accessToken}'",
+            "required": true,
+            "type": "string"
           }
-        }
-      },
-      "post": {
-        "description": "",
+        ],
         "responses": {
           "default": {
             "description": ""
@@ -137,7 +231,34 @@
         }
       },
       "put": {
-        "description": "",
+        "description": "Add a product to users cart",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Use accessToken from /login in the format 'Bearer {accessToken}'",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "JSON",
+            "in": "body",
+            "description": "Get specific product by id",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "productId": {
+                  "type": "string",
+                  "example": "7718f2d9-610e-4571-a85f-1c5defee147a"
+                },
+                "quantity": {
+                  "type": "number",
+                  "example": 2
+                }
+              }
+            }
+          }
+        ],
         "responses": {
           "default": {
             "description": ""
@@ -145,6 +266,43 @@
         }
       },
       "delete": {
+        "description": "Remove product from cart based on quantity",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Use accessToken from /login in the format 'Bearer {accessToken}'",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "JSON",
+            "in": "body",
+            "description": "Get specific product by id",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "productId": {
+                  "type": "string",
+                  "example": "7718f2d9-610e-4571-a85f-1c5defee147a"
+                },
+                "quantity": {
+                  "type": "number",
+                  "example": 2
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/logout": {
+      "post": {
         "description": "",
         "responses": {
           "default": {
