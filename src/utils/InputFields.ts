@@ -88,7 +88,7 @@ class InputFields {
   static numberValidator = (number) => {
     const numberValidator = /^[0-9]*$/
 
-    return numberValidator.test(number)
+    return numberValidator.test(number) && typeof number === 'number'
   }
 }
 

@@ -96,6 +96,7 @@ class ProductController {
     const data = await new ProductRepository(options).deleteProductById(req.body.productId)
 
     if (data.statusCode == 200) {
+      data.message = `Product deleted`
       return ResponseHandler.successResponse(
         res,
         data.statusCode || data.body.statusCode,
@@ -103,6 +104,17 @@ class ProductController {
         data.body
       )
     }
+
+    if (data.statusCode == 404) {
+      data.message = 'Product not found'
+      return ResponseHandler.errorResponse(
+        res,
+        data.statusCode || data.body.statusCode,
+        data.message,
+        data.body
+      )
+    }
+
     return ResponseHandler.errorResponse(
       res,
       data.statusCode || data.body.statusCode,

@@ -1,4 +1,4 @@
-interface Response {
+type Response = {
   status: string
   message?: string
   data?: object
@@ -20,7 +20,7 @@ class ResponseHandler {
    *
    * @return response JSON
    */
-  static successResponse = (response, statusCode, message, data) => {
+  static successResponse = (response, statusCode, message, data): Response => {
     const responseBody: Response = { status: 'success' }
 
     if (message !== '') {
@@ -47,7 +47,7 @@ class ResponseHandler {
    *
    * @return response JSON
    */
-  static errorResponse = (response, statusCode, message, data) => {
+  static errorResponse = (response, statusCode, message, data): Response => {
     const responseBody: Response = { status: 'error' }
     if (message !== '') {
       responseBody.message = message

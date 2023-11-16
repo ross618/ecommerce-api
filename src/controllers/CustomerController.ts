@@ -15,7 +15,6 @@ class CustomerController {
   constructor() {}
   async getCustomer(req: Request, res: Response) {
     const { email: username, password } = req.body
-    const user = {username, password}
     const options = getOptions(req.headers, { username, password })
     const data = await new CustomerRepository(options).getCustomer(
       req.body,
@@ -23,8 +22,20 @@ class CustomerController {
     )
 
     if (data.statusCode == 200) {
+      const user = {
+        username,
+        customerId: data.body?.customer?.id
+      }
       // create jwt access token if successfully logged in
-      data.body.token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '2h'});
+      data.body.accessToken = this.generateAccessToken(user);
+      
+      const customerBody = data.body.customer;
+      const mappedCustomer = {
+        id: customerBody.id,
+        email: customerBody.email,
+        firstName: customerBody.firstName
+      }
+      data.body.customer = mappedCustomer;
       return ResponseHandler.successResponse(
         res,
         data.statusCode || data.body.statusCode,
@@ -41,7 +52,7 @@ class CustomerController {
   }
 
   async logoutCustomer(req: Request, res: Response) {
-    const { email: username, password } = req.body
+    // const { email: username, password } = req.body
     const options = getOptions(req.headers)
     const data = await new CustomerRepository(options).logoutCustomer()
 
@@ -54,6 +65,10 @@ class CustomerController {
       data.message || data.body.message,
       data.body
     )
+  }
+
+  generateAccessToken(user) {
+    return jwt.sign(user, process.env.JWT_ACCESS_TOKEN_SECRET, {expiresIn: '1h'});
   }
 }
 

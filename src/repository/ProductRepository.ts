@@ -1,4 +1,4 @@
-import Client from '../client/Client';
+import CommercetoolsClient from '../commerctools/Client';
 import { ApiRoot, ProductDraft } from '@commercetools/platform-sdk';
 import {
   UpdateProductActions,
@@ -24,7 +24,7 @@ class Product implements IProductRepository {
   projectKey: string;
   currency: string;
   constructor(options) {
-    const rootClient = new Client(options);
+    const rootClient = new CommercetoolsClient(options);
     this.apiRoot = rootClient.getApiRoot(
       rootClient.getClientFromOption(options)
     );
@@ -63,18 +63,18 @@ class Product implements IProductRepository {
 
   async addProduct(productData) {
     try {
-      // Create new product
+      const product = await this.apiRoot
+      .withProjectKey({ projectKey: this.projectKey })
+      .products()
+      .post({
+        body: this.createProductDraft(productData),
+      })
+      .execute();
+    
+       // update inventory if quantityOnStock is included
       if (productData.quantityOnStock) {
         await this.setStockQuantity(productData);
       }
-      const product = await this.apiRoot
-        .withProjectKey({ projectKey: this.projectKey })
-        .products()
-        .post({
-          body: this.createProductDraft(productData),
-        })
-        .execute();
-
       return product;
     } catch (error) {
       return error;
@@ -84,6 +84,7 @@ class Product implements IProductRepository {
   async updateProduct(productData) {
     try {
       const currentProduct = await this.getProductById(productData.productId);
+      // update inventory if quantityOnStock is included
       if (productData.quantityOnStock) {
         productData.inventoryId =
           currentProduct?.body?.masterData?.current?.masterVariant?.availability?.id;

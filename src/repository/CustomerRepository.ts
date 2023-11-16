@@ -1,4 +1,4 @@
-import Client from '../client/Client';
+import CommercetoolsClient from '../commerctools/Client';
 import { ApiRoot } from '@commercetools/platform-sdk';
 
 type ICustomerOptions = {
@@ -23,7 +23,7 @@ class CustomerRepository implements ICustomerRepository {
   apiRoot: ApiRoot;
   projectKey: string;
   constructor(options) {
-    const rootClient = new Client(options);
+    const rootClient = new CommercetoolsClient(options);
     this.apiRoot = rootClient.getApiRoot(
       rootClient.getClientFromOption(options)
     );

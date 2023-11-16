@@ -45,6 +45,15 @@ class CartController {
         data.body
       )
     }
+    if (data.statusCode == 404) {
+      data.message = 'No cart found'
+      return ResponseHandler.errorResponse(
+        res,
+        data.statusCode || data.body.statusCode,
+        data.message,
+        data.body
+      )
+    }
     return ResponseHandler.errorResponse(
       res,
       data.statusCode || data.body.statusCode,
@@ -83,6 +92,24 @@ class CartController {
         res,
         data.statusCode || data.body.statusCode,
         data.message || data.body.message,
+        data.body
+      )
+    }
+    if (data.statusCode == 404) {
+      data.message = 'No cart found'
+      return ResponseHandler.errorResponse(
+        res,
+        data.statusCode || data.body.statusCode,
+        data.message,
+        data.body
+      )
+    }
+    if (data.statusCode == 422) {
+      data.message = `Product with id ${req.body.productId} is not in current cart`;
+      return ResponseHandler.errorResponse(
+        res,
+        data.statusCode || data.body.statusCode,
+        data.message,
         data.body
       )
     }

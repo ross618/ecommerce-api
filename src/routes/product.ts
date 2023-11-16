@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { ProductController } from '../controller'
+import { ProductController } from '../controllers'
 import { Auth, ProductValidator } from '../middleware'
 
 const productController = new ProductController()
@@ -10,7 +10,7 @@ const { validateAddProduct, validateGetProduct, validateUpdateProduct, validateD
 const { getProducts, getProductById, addProduct, updateProduct, deleteProductById } = productController
 
 router.get('/products', getProducts.bind(productController))
-router.post('/single-product', authenticate, validateGetProduct, getProductById.bind(productController))
+router.post('/single-product', validateGetProduct, getProductById.bind(productController))
 
 router.post('/product', authenticate, validateAddProduct, addProduct.bind(productController))
 

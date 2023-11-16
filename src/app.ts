@@ -45,5 +45,11 @@ app.use(
 // Routes
 app.use('/api', routes)
 app.use('/api-docs', serve, setup(swaggerDocument));
+app.get('/home', async function (_, res) {
+  res.status(200).json({
+    status: 'success',
+    message: 'Welcome to the E-commerce home route',
+  })
+})
 
 export default app

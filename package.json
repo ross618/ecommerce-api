@@ -6,7 +6,8 @@
   "scripts": {
     "start": "nodemon",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc"
+    "build": "tsc",
+    "swagger-autogen": "node ./src/swagger.ts"
   },
   "keywords": [],
   "author": "Ross",

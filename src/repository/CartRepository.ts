@@ -1,4 +1,4 @@
-import Client from '../client/Client';
+import CommercetoolsClient from '../commerctools/Client';
 import { ApiRoot } from '@commercetools/platform-sdk';
 import {
   CartDraft,
@@ -20,7 +20,7 @@ class CartRepository implements ICart {
   projectKey: string;
 
   constructor(options) {
-    const rootClient = new Client(options);
+    const rootClient = new CommercetoolsClient(options);
     this.apiRoot = rootClient.getApiRoot(
       rootClient.getClientFromOption(options)
     );
@@ -160,7 +160,14 @@ class CartRepository implements ICart {
       const currentLineItem = lineItems.find(
         (lineItem) => lineItem.productId === productDetails.productId
       );
-      productDetails.lineItemId = currentLineItem?.id;
+
+      if (currentLineItem?.id) {
+        productDetails.lineItemId = currentLineItem?.id;
+      } else {
+        // return 422 code if lineItemId is undefined
+        activeCart.statusCode = 422;
+        return activeCart;
+      }
 
       const updatedCart = await this.apiRoot
         .withProjectKey({ projectKey: this.projectKey })

@@ -25,7 +25,7 @@ class Auth {
       return response.status(401).send('Unauthorized access');
     }
     try {
-      jwt.verify(token, process.env.ACCESS_TOKEN_SECRET), (error, user) => {
+      jwt.verify(token, process.env.JWT_ACCESS_TOKEN_SECRET), (error, user) => {
         if (error) return response.status(403).send(error);
         request.user = user;
       };
