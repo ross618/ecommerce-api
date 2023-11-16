@@ -18,9 +18,6 @@ router.post(
   validateLogin,
   forwardID,
   getCustomer.bind(customerController)
-/*  #swagger.parameters['object'] = { in: 'body', description: 'Log in with commercetools user', 
-    schema: { email: 'rosstest@example.com', password: 'password' }}
-*/
 )
 router.post('/logout', logoutCustomer.bind(customerController))
 

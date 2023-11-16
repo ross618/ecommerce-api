@@ -56,6 +56,7 @@ class ProductController {
     const data = await new ProductRepository(options).addProduct(req.body)
 
     if (data.statusCode == 201) {
+      data.message = `Product added`
       return ResponseHandler.successResponse(
         res,
         data.statusCode || data.body.statusCode,
@@ -76,6 +77,7 @@ class ProductController {
     const data = await new ProductRepository(options).updateProduct(req.body)
 
     if (data.statusCode == 200) {
+      `Product updated`
       return ResponseHandler.successResponse(
         res,
         data.statusCode || data.body.statusCode,
