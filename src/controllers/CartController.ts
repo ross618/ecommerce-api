@@ -46,7 +46,7 @@ class CartController {
       )
     }
     if (data.statusCode == 404) {
-      data.message = 'No cart found'
+      data.message = 'No cart found, try logging in'
       return ResponseHandler.errorResponse(
         res,
         data.statusCode || data.body.statusCode,
@@ -97,7 +97,7 @@ class CartController {
       )
     }
     if (data.statusCode == 404) {
-      data.message = 'No cart found'
+      data.message = 'No cart found, try logging in'
       return ResponseHandler.errorResponse(
         res,
         data.statusCode || data.body.statusCode,

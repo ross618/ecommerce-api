@@ -4,6 +4,12 @@
 
 The E-commerce API is a demo app that allows a user to CRUD commercetools products and update the logged in users cart.
 
+## Live Demo
+
+- This API can be tested here https://n43ruekf4d.execute-api.eu-west-1.amazonaws.com/home
+- Open Postman and import the environment and collection found in the /postman folder
+- All credentials can be found in a LastPass file managed by me (ross.pretorius@valtech.com) please contact me if you need the necessary credentials
+
 ## Installation
 
 - run `npm i`

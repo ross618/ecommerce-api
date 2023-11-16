@@ -25,16 +25,11 @@ class Auth {
       return response.status(401).send('Unauthorized access');
     }
     try {
-      const user = {};
-      const decoded = jwt.decode(token, { complete: true });
-      // console.log(decoded);
+      const user = jwt.decode(token, { complete: true });
       jwt.verify(token, process.env.JWT_ACCESS_TOKEN_SECRET), (error, user) => {
         if (error) return response.status(403).send(error);
-        // request.user = user;
-        // request.locals.user = user;
-        // console.log(user)
       };
-      request.user = decoded.payload;
+      request.user = user.payload;
     }
     catch (error) {
       return response.status(403).send('Invalid token');
