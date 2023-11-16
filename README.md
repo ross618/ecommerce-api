@@ -46,9 +46,8 @@ Requires 'Authorization: Bearer {accessToken}' - accessToken is generated when u
 
 This API can also be run in docker by running
 
-- run `npm i`
-- create .env file based on example.env and replace the necessary secret values
-- run `npm start`
+- run `docker-compose build`
+- run `docker-compose up`
 - go to `localhost:3000/home` to confirm the server is running
 
 ## Serverless
