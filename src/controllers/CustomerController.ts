@@ -24,7 +24,8 @@ class CustomerController {
     if (data.statusCode == 200) {
       const user = {
         username,
-        customerId: data.body?.customer?.id
+        customerId: data.body?.customer?.id,
+        cartId: data.body?.cart?.id
       }
       // create jwt access token if successfully logged in
       data.body.accessToken = this.generateAccessToken(user);

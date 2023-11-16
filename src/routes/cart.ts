@@ -9,14 +9,14 @@ const router = Router()
 const { authenticate } = Auth;
 const { validateAddToCart, validateDeleteCartItem } = CartValidator
 const {
-  getActiveCart,
+  getCartById,
   updateActiveCart,
   removeLineItem,
 } = cartController
 
 router.use('/', authenticate);
 
-router.get('/cart', getActiveCart.bind(cartController))
+router.get('/cart', getCartById.bind(cartController))
 router.put('/cart', validateAddToCart, updateActiveCart.bind(cartController))
 router.delete('/cart', validateDeleteCartItem, removeLineItem.bind(cartController))
 

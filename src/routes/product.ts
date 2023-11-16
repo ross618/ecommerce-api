@@ -11,9 +11,7 @@ const { getProducts, getProductById, addProduct, updateProduct, deleteProductByI
 
 router.get('/products', getProducts.bind(productController))
 router.post('/single-product', validateGetProduct, getProductById.bind(productController))
-
 router.post('/product', authenticate, validateAddProduct, addProduct.bind(productController))
-
 router.put('/product', authenticate, validateUpdateProduct, updateProduct.bind(productController))
 router.delete('/product', authenticate, validateDeleteProduct, deleteProductById.bind(productController))
 

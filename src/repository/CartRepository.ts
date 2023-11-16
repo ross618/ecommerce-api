@@ -11,8 +11,8 @@ import {
 interface ICart {
   apiRoot: ApiRoot;
   projectKey: string;
-  createCartForCurrentCustomer(cartDraft: CartDraft): object;
-  getActiveCart(): object;
+  createCartForCurrentCustomer(user, cartDraft: CartDraft): object;
+  getActiveCart(user): object;
 }
 
 class CartRepository implements ICart {
@@ -103,13 +103,13 @@ class CartRepository implements ICart {
     }
   }
 
-  private async getCartById(cartId) {
+  async getCartById(user) {
     try {
       const activeCart = await this.apiRoot
         .withProjectKey({ projectKey: this.projectKey })
         .me()
         .carts()
-        .withId({ ID: cartId })
+        .withId({ ID: user.cartId })
         .get()
         .execute();
 
@@ -119,17 +119,18 @@ class CartRepository implements ICart {
     }
   }
 
-  async updateActiveCart(productDetails) {
+  async updateActiveCart(user, productDetails) {
     try {
       // if cartId is undefined create an anonymous cart
-      if (!productDetails.cartId) {
+      if (!user.cartId) {
         const { body } = await this.createCartForCurrentCustomer({
           currency: process.env.DEFAULT_CURRENCY,
         });
         productDetails.cartId = body.id;
         productDetails.version = body.version;
       } else {
-        const { body } = await this.getActiveCart();
+        const { body } = await this.getCartById(user);
+        productDetails.cartId = body.id;
         productDetails.version = body.version;
       }
 
@@ -147,9 +148,9 @@ class CartRepository implements ICart {
     }
   }
 
-  async removeLineItem(productDetails) {
+  async removeLineItem(user, productDetails) {
     try {
-      const activeCart = await this.getActiveCart();
+      const activeCart = await this.getCartById(user);
       // return activeCart response if not successful
       if (activeCart.statusCode !== 200) {
         return activeCart;

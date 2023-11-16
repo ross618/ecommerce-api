@@ -12,7 +12,7 @@ class CartController {
   constructor() {}
 
   async createCartForCurrentCustomer(req: Request, res: Response) {
-    const options = getOptions(req.headers) // get the actual option
+    const options = getOptions(req.headers)
     const data = await new CartRepository(options).createCartForCurrentCustomer(
       req.body
     )
@@ -33,9 +33,9 @@ class CartController {
     )
   }
 
-  async getActiveCart(req: Request, res: Response) {
-    const options = getOptions(req.headers) // get the actual option
-    const data = await new CartRepository(options).getActiveCart()
+  async getCartById(req: Request, res: Response) {
+    const options = getOptions(req.headers)
+    const data = await new CartRepository(options).getCartById(req.user)
 
     if (data.statusCode == 200) {
       return ResponseHandler.successResponse(
@@ -63,8 +63,8 @@ class CartController {
   }
 
   async updateActiveCart(req: Request, res: Response) {
-    const options = getOptions(req.headers) // get the header object
-    const data = await new CartRepository(options).updateActiveCart(req.body)
+    const options = getOptions(req.headers)
+    const data = await new CartRepository(options).updateActiveCart(req.user, req.body)
     if (data.statusCode == 200) {
       // data.body.token = encrypt(req.headers.token)
       data.body.token = data.body?.anonymousId || data.body?.customerId || null
@@ -86,7 +86,7 @@ class CartController {
 
   async removeLineItem(req: Request, res: Response) {
     const options = getOptions(req.headers) // get the actual option
-    const data = await new CartRepository(options).removeLineItem(req.body)
+    const data = await new CartRepository(options).removeLineItem(req.user, req.body)
 
     if (data.statusCode == 200) {
       return ResponseHandler.successResponse(
