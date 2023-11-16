@@ -68,6 +68,7 @@ class CartController {
     if (data.statusCode == 200) {
       // data.body.token = encrypt(req.headers.token)
       data.body.token = data.body?.anonymousId || data.body?.customerId || null
+      data.message = 'Cart updated'
       return ResponseHandler.successResponse(
         res,
         data.statusCode || data.body.statusCode,
